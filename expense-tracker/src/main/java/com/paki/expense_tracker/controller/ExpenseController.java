@@ -28,6 +28,7 @@ public class ExpenseController {
             @PathVariable Long userId,
             @RequestBody Expense expense
     ) {
+        // Attach the expense to the user and save
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         expense.setUser(user);
@@ -36,6 +37,7 @@ public class ExpenseController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<List<Expense>> getExpenses(@PathVariable Long userId) {
+                // Return all expenses for a user
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         List<Expense> expenses = expenseRepository.findByUser(user);
@@ -55,6 +57,7 @@ public class ExpenseController {
             @PathVariable Long userId,
             @PathVariable String category
     ) {
+        // Filter expenses by category (case-insensitive)
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         List<Expense> expenses = expenseRepository.findByUser(user)
@@ -70,6 +73,7 @@ public class ExpenseController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
     ) {
+        // Filter expenses between the given dates
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         List<Expense> expenses = expenseRepository.findByUser(user)
@@ -81,6 +85,7 @@ public class ExpenseController {
 
     @GetMapping("/{userId}/total")
     public ResponseEntity<Map<String, Object>> getTotalSpending(@PathVariable Long userId) {
+        // Aggregate total, count, and average spending
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         List<Expense> expenses = expenseRepository.findByUser(user);
@@ -96,6 +101,7 @@ public class ExpenseController {
 
     @GetMapping("/{userId}/category-stats")
     public ResponseEntity<Map<String, Object>> getCategoryStats(@PathVariable Long userId) {
+        // Aggregate spending by category
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         List<Expense> expenses = expenseRepository.findByUser(user);
@@ -122,6 +128,7 @@ public class ExpenseController {
             @PathVariable Long expenseId,
             @RequestBody Expense expenseDetails
     ) {
+        // Ensure expense belongs to the user before updating
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Expense expense = expenseRepository.findById(expenseId)
@@ -144,6 +151,7 @@ public class ExpenseController {
             @PathVariable Long userId,
             @PathVariable Long expenseId
     ) {
+        // Ensure expense belongs to the user before deleting
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Expense expense = expenseRepository.findById(expenseId)
@@ -159,6 +167,7 @@ public class ExpenseController {
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteAllExpenses(@PathVariable Long userId) {
+                // Delete all expenses for a user
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         List<Expense> expenses = expenseRepository.findByUser(user);

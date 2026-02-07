@@ -29,9 +29,11 @@ public class BudgetController {
             @PathVariable Long userId,
             @RequestBody Budget budget
     ) {
+                // Find the user owning this budget
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
+                // Update existing budget for the same category if present
         Optional<Budget> existing = budgetRepository.findByUserAndCategory(user, budget.getCategory());
         if (existing.isPresent()) {
             Budget existingBudget = existing.get();
@@ -39,12 +41,14 @@ public class BudgetController {
             return ResponseEntity.ok(budgetRepository.save(existingBudget));
         }
         
+                // Create a new budget for this user and category
         budget.setUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(budgetRepository.save(budget));
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<List<Budget>> getBudgets(@PathVariable Long userId) {
+                // Return all budgets for a user
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         List<Budget> budgets = budgetRepository.findByUser(user);
@@ -53,6 +57,7 @@ public class BudgetController {
 
     @GetMapping("/{userId}/with-spending")
     public ResponseEntity<List<Map<String, Object>>> getBudgetsWithSpending(@PathVariable Long userId) {
+        // Enrich budgets with spending totals and derived stats
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
@@ -87,6 +92,7 @@ public class BudgetController {
             @PathVariable Long budgetId,
             @RequestBody Budget budgetDetails
     ) {
+        // Ensure budget belongs to the user before updating
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Budget budget = budgetRepository.findById(budgetId)
@@ -105,6 +111,7 @@ public class BudgetController {
             @PathVariable Long userId,
             @PathVariable Long budgetId
     ) {
+        // Ensure budget belongs to the user before deleting
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Budget budget = budgetRepository.findById(budgetId)

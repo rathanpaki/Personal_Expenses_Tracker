@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BudgetRepository extends JpaRepository<Budget, Long> {
+    // Fetch budgets for a specific user
     List<Budget> findByUser(User user);
+    // Fetch a budget by user and category
     Optional<Budget> findByUserAndCategory(User user, String category);
 }

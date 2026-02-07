@@ -32,15 +32,18 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
+    // Expenses owned by this user
     private List<Expense> expenses;
 
     @PrePersist
+    // Set timestamps on insert
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
+    // Update timestamp on changes
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }

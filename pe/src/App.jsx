@@ -196,8 +196,18 @@ const ExpenseTracker = () => {
       }
       setAuthForm({ email: "", password: "", name: "" });
     } catch (err) {
+      const status = err.response?.status;
       const errMsg =
         err.response?.data?.message || err.message || "Authentication failed";
+
+      if (authMode === "login" && status === 404) {
+        setAuthMode("register");
+      }
+
+      if (authMode === "register" && status === 409) {
+        setAuthMode("login");
+      }
+
       setError(errMsg);
       addNotification(errMsg, "error");
     } finally {
